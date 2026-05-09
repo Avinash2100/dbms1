@@ -1,0 +1,263 @@
+DROP DATABASE IF EXISTS college_db;
+CREATE DATABASE college_db;
+
+USE college_db;
+
+CREATE TABLE student(
+    StudentID INT PRIMARY KEY,
+    Name VARCHAR(50),
+    Email VARCHAR(100),
+    Age INT,
+    Address VARCHAR(50)
+);
+
+INSERT INTO student VALUES
+(1001,'Pooja','pooja@gmail.com',21,'Pune'),
+(1002,'Vaibhavi','vaibhavi@edu.com',19,'Mumbai'),
+(1003,'Dnyaneshwari','dnyaneshwari@gmail.com',20,'Buldhana'),
+(1004,'Snehal','snehal@edu.com',21,'Baramati'),
+(1005,'Siddhi','siddhi@edu.com',21,'Satara'),
+(1006,'Akanksha','akanksha@edu.com',19,'Pune'),
+(1007,'Sayali','sayali@edu.com',22,'Nashik'),
+(1008,'Radhika','radhika@gmail.com',23,'Nagpur'),
+(1009,'Sampada','sampada@edu.com',21,'Nagpur'),
+(1010,'Ahilya','ahilya@gmail.com',19,'Pune'),
+(1011,'Atharv','atharv@gmail.com',22,'Pune'),
+(1012,'Keshav','keshav@edu.com',21,'Mumbai'),
+(1013,'Ashish','ashish@edu.com',22,'Solapur'),
+(1014,'Pradnil','pradnil@gmail.com',23,'Jalgaon'),
+(1015,'Nishant','nishant@edu.com',22,'Pune');
+
+-- =========================
+-- INSTRUCTOR TABLE
+-- =========================
+
+CREATE TABLE instructor(
+    InstructorID INT PRIMARY KEY,
+    Name VARCHAR(50),
+    Email VARCHAR(100),
+    Department VARCHAR(50)
+);
+
+INSERT INTO instructor VALUES
+(1,'Amit','amit@gmail.com','AI'),
+(2,'Rahul','rahul@gmail.com','Computer Science'),
+(3,'Priya','priya@gmail.com','IT'),
+(4,'Kunal','kunal@gmail.com','AI'),
+(5,'Ramesh','ramesh@gmail.com','Electronics'),
+(6,'Suresh','suresh@gmail.com','Electronics'),
+(7,'Anita','anita@gmail.com','AI'),
+(8,'Meena','meena@gmail.com','AI'),
+(9,'Rohit','rohit@gmail.com','AI'),
+(10,'Anjali','anjali@gmail.com','Computer Science'),
+(11,'Vikas','vikas@gmail.com','Computer Science'),
+(12,'Pallavi','pallavi@gmail.com','IT'),
+(13,'Ajay','ajay@gmail.com','AI'),
+(14,'Nitin','nitin@gmail.com','Computer Science'),
+(15,'Deepak','deepak@gmail.com','AI');
+
+-- =========================
+-- COURSE TABLE
+-- =========================
+
+CREATE TABLE course(
+    CourseID INT PRIMARY KEY,
+    Name VARCHAR(50),
+    Credits INT,
+    InstructorID INT
+);
+
+INSERT INTO course VALUES
+(101,'Machine Learning',4,1),
+(102,'Data Structures',4,2),
+(103,'Database Management',3,3),
+(104,'Machine Learning',4,4),
+(105,'Digital Electronics',3,5),
+(106,'Digital Electronics',3,6),
+(107,'Artificial Intelligence',4,7),
+(108,'Artificial Intelligence',4,8),
+(109,'Machine Learning',4,9),
+(110,'Computer Networks',3,10),
+(111,'Computer Networks',3,11),
+(112,'Database Management',3,12),
+(113,'Machine Learning',4,13),
+(114,'Data Structures',4,14),
+(115,'Deep Learning',4,15);
+
+-- =========================
+-- ENROLLMENT TABLE
+-- =========================
+
+CREATE TABLE enrollment(
+    EnrollmentID INT PRIMARY KEY,
+    StudentID INT,
+    CourseID INT,
+    EnrollmentDate DATE
+);
+
+INSERT INTO enrollment VALUES
+(1,1001,101,'2024-01-15'),
+(2,1002,102,'2024-01-05'),
+(3,1003,103,'2024-02-01'),
+(4,1004,104,'2024-01-20'),
+(5,1005,105,'2024-02-11'),
+(6,1006,107,'2024-03-01'),
+(7,1007,110,'2024-01-18'),
+(8,1008,113,'2024-04-02'),
+(9,1009,114,'2024-01-09'),
+(10,1010,101,'2024-03-15'),
+(11,1011,103,'2024-04-01'),
+(12,1012,102,'2024-02-20'),
+(13,1013,115,'2024-01-25'),
+(14,1014,110,'2024-03-17'),
+(15,1015,104,'2024-04-05');
+
+-- =========================
+-- ASSIGNMENT 3 QUERIES
+-- =========================
+
+-- 1
+SELECT Name,Email
+FROM student;
+
+-- 2
+SELECT * FROM student
+WHERE Age > 20;
+
+-- 3
+SELECT * FROM student
+WHERE StudentID = 1003;
+
+-- 4
+SELECT * FROM course
+WHERE Credits > 3;
+
+-- 5
+SELECT course.Name
+FROM course
+JOIN instructor
+ON course.InstructorID = instructor.InstructorID
+WHERE course.InstructorID = 1;
+
+-- 6
+SELECT * FROM student
+ORDER BY Name ASC;
+
+-- 7
+SELECT * FROM course
+ORDER BY Credits DESC;
+
+-- 8
+SELECT * FROM student
+WHERE Address = 'Pune';
+
+-- 9
+SELECT * FROM instructor
+WHERE Department = 'Computer Science';
+
+-- 10
+SELECT COUNT(*) AS Total_Students
+FROM student;
+
+-- 11
+SELECT AVG(Age) AS Average_Age
+FROM student;
+
+-- 12
+UPDATE student
+SET Address = 'Mumbai'
+WHERE StudentID = 1002;
+
+-- 13
+SELECT * FROM student
+WHERE Age BETWEEN 20 AND 22;
+
+-- 14
+SELECT * FROM course
+WHERE Credits = 3
+OR Credits = 4;
+
+-- 15
+SELECT * FROM student
+WHERE Address <> 'Mumbai';
+
+-- 16
+SELECT * FROM student
+WHERE Name LIKE 'A%';
+
+-- 17
+SELECT student.*
+FROM student
+JOIN enrollment
+ON student.StudentID = enrollment.StudentID
+WHERE EnrollmentDate > '2024-01-10';
+
+-- 18
+SELECT student.*
+FROM student
+JOIN enrollment
+ON student.StudentID = enrollment.StudentID
+JOIN course
+ON enrollment.CourseID = course.CourseID
+WHERE course.Name = 'Database Management';
+
+-- 19
+SELECT student.StudentID,
+       student.Name,
+       COUNT(enrollment.CourseID) AS course_count
+FROM student
+JOIN enrollment
+ON student.StudentID = enrollment.StudentID
+GROUP BY student.StudentID, student.Name
+HAVING COUNT(enrollment.CourseID) > 1;
+
+-- 20
+SELECT * FROM course
+WHERE Credits = (
+    SELECT MAX(Credits)
+    FROM course
+);
+
+-- 21
+SELECT * FROM student
+WHERE Age > (
+    SELECT AVG(Age)
+    FROM student
+);
+
+-- 22
+SELECT instructor.*,
+       COUNT(course.CourseID) AS course_count
+FROM instructor
+JOIN course
+ON instructor.InstructorID = course.InstructorID
+GROUP BY instructor.InstructorID
+HAVING COUNT(course.CourseID) > 1;
+
+-- 23
+SELECT * FROM student
+WHERE StudentID IN (
+    SELECT StudentID
+    FROM enrollment E
+    JOIN course C
+    ON E.CourseID = C.CourseID
+    GROUP BY StudentID
+    HAVING SUM(C.Credits) = (
+        SELECT MAX(TotalCredits)
+        FROM (
+            SELECT SUM(C2.Credits) AS TotalCredits
+            FROM enrollment E2
+            JOIN course C2
+            ON E2.CourseID = C2.CourseID
+            GROUP BY E2.StudentID
+        ) AS StudentTotals
+    )
+);
+
+-- 24
+SELECT *
+FROM course
+WHERE CourseID NOT IN (
+    SELECT DISTINCT CourseID
+    FROM enrollment
+);
