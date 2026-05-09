@@ -1,0 +1,100 @@
+CREATE DATABASE CollegeDB;
+USE CollegeDB;
+-- STUDENT TABLE
+CREATE TABLE student(
+    StudentID INT PRIMARY KEY,
+    Name VARCHAR(50),
+    Age INT
+);
+
+INSERT INTO student VALUES
+(1001,'Avi',20),
+(1002,'Rahul',21),
+(1003,'Neha',22),
+(1015,'Karan',19);
+
+-- COURSE TABLE
+
+CREATE TABLE course(
+    CourseID INT PRIMARY KEY,
+    Name VARCHAR(50),
+    Credits INT
+);
+
+INSERT INTO course VALUES
+(101,'Database Management',4),
+(102,'Python',3),
+(103,'Machine Learning',5);
+
+-- ENROLLMENT TABLE
+
+CREATE TABLE enrollment(
+    EnrollmentID INT PRIMARY KEY,
+    StudentID INT,
+    CourseID INT
+);
+
+INSERT INTO enrollment VALUES
+(1,1001,101),
+(2,1002,102),
+(3,1003,103),
+(4,1015,101);
+
+-- CREATE VIEW
+
+CREATE VIEW V_STUDENT AS
+SELECT student.StudentID,
+       student.Name,
+       course.Name AS Course_Name,
+       course.Credits
+FROM student
+INNER JOIN enrollment
+ON student.StudentID = enrollment.StudentID
+INNER JOIN course
+ON enrollment.CourseID = course.CourseID;
+
+-- DISPLAY VIEW
+
+SELECT * FROM V_STUDENT;
+
+-- FILTER USING VIEW
+
+SELECT * FROM V_STUDENT
+WHERE StudentID = 1001;
+
+-- COURSE NAME FILTER
+
+SELECT * FROM V_STUDENT
+WHERE Course_Name = 'Database Management';
+
+-- CREDITS FILTER
+
+SELECT * FROM V_STUDENT
+WHERE Credits > 3;
+
+-- SECOND VIEW
+
+CREATE VIEW V_HSTUDENT AS
+SELECT student.StudentID,
+       student.Age,
+       student.Name
+FROM student;
+
+-- DISPLAY SECOND VIEW
+
+SELECT * FROM V_HSTUDENT;
+
+-- AGE FILTER
+
+SELECT * FROM V_HSTUDENT
+WHERE Age > 18;
+
+-- UPDATE VIEW
+UPDATE V_HSTUDENT
+SET Name = 'Preethi'
+WHERE StudentID = 1001;
+-- DELETE FROM VIEW
+DELETE FROM V_HSTUDENT
+WHERE StudentID = 1015;
+-- DROP VIEW
+DROP VIEW V_HSTUDENT;
