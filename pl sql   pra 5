@@ -1,0 +1,218 @@
+CREATE DATABASE sales_db;
+
+USE sales_db;
+
+CREATE TABLE sales (
+    sale_id INT PRIMARY KEY AUTO_INCREMENT,
+    product_name VARCHAR(50),
+    quantity INT,
+    price DECIMAL(10,2),
+    sale_date DATE
+);
+
+INSERT INTO sales (product_name, quantity, price, sale_date) VALUES
+('Laptop', 2, 50000, '2024-01-10'),
+('Mobile', 5, 20000, '2024-02-15'),
+('Laptop', 1, 52000, '2024-03-05'),
+('Tablet', 3, 15000, '2024-03-20'),
+('Mobile', 2, 21000, '2024-04-10');
+
+-- PROCEDURE TO INSERT SALE
+
+DELIMITER //
+
+CREATE PROCEDURE insert_sale(
+    IN p_name VARCHAR(50),
+    IN qty INT,
+    IN pr DECIMAL(10,2),
+    IN s_date DATE
+)
+BEGIN
+    INSERT INTO sales(product_name, quantity, price, sale_date)
+    VALUES(p_name, qty, pr, s_date);
+END //
+
+DELIMITER ;
+
+CALL insert_sale('Headphones', 4, 3000, '2024-05-01');
+
+-- FUNCTION TO CALCULATE TOTAL SALES
+
+DELIMITER //
+
+CREATE FUNCTION total_sales()
+RETURNS DECIMAL(15,2)
+DETERMINISTIC
+BEGIN
+    DECLARE total DECIMAL(15,2);
+
+    SELECT SUM(quantity * price)
+    INTO total
+    FROM sales;
+
+    RETURN total;
+END //
+
+DELIMITER ;
+
+SELECT total_sales();
+
+-- PROCEDURE TO UPDATE PRICE
+
+DELIMITER //
+
+CREATE PROCEDURE update_price(
+    IN s_id INT,
+    IN new_price DECIMAL(10,2)
+)
+BEGIN
+    UPDATE sales
+    SET price = new_price
+    WHERE sale_id = s_id;
+END //
+
+DELIMITER ;
+
+CALL update_price(1, 55000);
+
+SELECT * FROM sales;
+
+-- FUNCTION TO DELETE PRODUCT
+
+DELIMITER //
+
+CREATE FUNCTION delete_product_by_id(s_id INT)
+RETURNS INT
+DETERMINISTIC
+BEGIN
+    DELETE FROM sales
+    WHERE sale_id = s_id;
+
+    RETURN ROW_COUNT();
+END //
+
+DELIMITER ;
+
+SELECT delete_product_by_id(4);
+
+-- FUNCTION FOR SALES BETWEEN DATES
+
+DELIMITER //
+
+CREATE FUNCTION sales_between(d1 DATE, d2 DATE)
+RETURNS DECIMAL(15,2)
+DETERMINISTIC
+BEGIN
+    DECLARE total DECIMAL(15,2);
+
+    SELECT SUM(quantity * price)
+    INTO total
+    FROM sales
+    WHERE sale_date BETWEEN d1 AND d2;
+
+    RETURN total;
+END //
+
+DELIMITER ;
+
+SELECT sales_between('2024-01-01','2024-03-31');
+
+-- FUNCTION TO FIND TOP PRODUCT
+
+DELIMITER //
+
+CREATE FUNCTION top_product()
+RETURNS VARCHAR(50)
+DETERMINISTIC
+BEGIN
+    DECLARE pname VARCHAR(50);
+
+    SELECT product_name
+    INTO pname
+    FROM sales
+    GROUP BY product_name
+    ORDER BY SUM(quantity) DESC
+    LIMIT 1;
+
+    RETURN pname;
+END //
+
+DELIMITER ;
+
+SELECT top_product();
+
+-- PROCEDURE FOR MONTHLY REVENUE
+
+DELIMITER //
+
+CREATE PROCEDURE monthly_revenue_all()
+BEGIN
+    SELECT 
+        MONTH(sale_date) AS month,
+        SUM(quantity * price) AS total_revenue
+    FROM sales
+    GROUP BY MONTH(sale_date)
+    ORDER BY month;
+END //
+
+DELIMITER ;
+
+CALL monthly_revenue_all();
+
+-- PROCEDURE FOR SALES SUMMARY
+
+DELIMITER //
+
+CREATE PROCEDURE sales_summary()
+BEGIN
+    SELECT 
+        COUNT(*) AS total_orders,
+        SUM(quantity) AS total_quantity,
+        SUM(quantity * price) AS total_revenue,
+        AVG(quantity * price) AS avg_sale
+    FROM sales;
+END //
+
+DELIMITER ;
+
+CALL sales_summary();
+
+-- FUNCTION FOR AVERAGE SALE OF PRODUCT
+
+DELIMITER //
+
+CREATE FUNCTION avg_sale(p_name VARCHAR(50))
+RETURNS DECIMAL(10,2)
+DETERMINISTIC
+BEGIN
+    DECLARE avg_val DECIMAL(10,2);
+
+    SELECT AVG(quantity * price)
+    INTO avg_val
+    FROM sales
+    WHERE product_name = p_name;
+
+    RETURN avg_val;
+END //
+
+DELIMITER ;
+
+SELECT avg_sale('Laptop');
+
+-- PROCEDURE FOR PRODUCT WISE SALES
+
+DELIMITER //
+
+CREATE PROCEDURE product_wise_sales()
+BEGIN
+    SELECT 
+        product_name,
+        SUM(quantity * price) AS total_sales
+    FROM sales
+    GROUP BY product_name
+    ORDER BY total_sales DESC;
+END //
+
+DELIMITER ;
+
+CALL product_wise_sales();
