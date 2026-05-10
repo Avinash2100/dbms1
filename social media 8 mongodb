@@ -1,0 +1,47 @@
+use Socialmedia
+
+db.createCollection("mongo")
+
+db.mongo.insertMany([
+{
+Facebook: "Amazon",
+Irrelevant: "Neutral",
+mentions: 10
+},
+{
+Facebook: "Microsoft",
+Irrelevant: "Negative",
+mentions: 20
+},
+{
+Facebook: "FIFA",
+Irrelevant: "Positive",
+mentions: 25
+},
+{
+Facebook: "PUBG",
+Irrelevant: "Positive",
+mentions: 30
+}
+])
+
+db.mongo.find()
+
+db.mongo.find({
+Irrelevant: "Negative"
+})
+
+db.mongo.updateOne(
+{ Irrelevant: "Negative" },
+{
+$set: {
+mentions: 50
+}
+}
+)
+
+db.mongo.deleteOne(
+{ Facebook: "Microsoft" }
+)
+
+db.mongo.find()
