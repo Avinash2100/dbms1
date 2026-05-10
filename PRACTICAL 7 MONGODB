@@ -1,0 +1,16 @@
+
+use emp
+db.createCollection("Employee")
+db.Employee.insertOne({
+name: "John Doe",
+position: "Developer",
+salary: 70000
+})
+db.Employee.find()
+db.Employee.updateOne(
+{ Name: "Abc" },
+{ $set: { sal: 30000 } }
+)
+db.Employee.deleteOne(
+{ Name: "Abc" }
+)
