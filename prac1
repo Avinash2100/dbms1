@@ -1,0 +1,36 @@
+Assignment Number: 1
+
+create database student;
+use student;
+create table student (
+StudentID INT PRIMARY KEY,
+Name VARCHAR(25),
+Email VARCHAR(25),
+Age INT,
+Address VARCHAR (50)
+);
+create table course (
+CourseID INT PRIMARY KEY,
+Name VARCHAR (25),
+Credits INT,
+InstructorID INT,
+FOREIGN KEY(InstructorID)
+REFERENCES instructor (InstructorID)
+);
+create table instructor (
+InstructorID INT PRIMARY KEY,
+Name VARCHAR (25),
+Email VARCHAR (25),
+Department VARCHAR (20)
+);
+create table enrollment (
+EnrollmentID INT PRIMARY KEY,
+StudentID INT,
+FOREIGN KEY(StudentID)
+REFERENCES student (StudentID),
+CourseID INT,
+FOREIGN KEY(CourseID)
+REFERENCES course (CourseID),
+Enrollmentdata VARCHAR (25)
+);
+show tables;
