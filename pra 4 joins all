@@ -1,0 +1,172 @@
+CREATE DATABASE assign4;
+
+USE assign4;
+
+-- CUSTOMER TABLE
+
+CREATE TABLE customer(
+    cust_id INT PRIMARY KEY,
+    cust_name VARCHAR(20),
+    city VARCHAR(15),
+    email VARCHAR(30)
+);
+
+-- ORDERS TABLE
+
+CREATE TABLE orders(
+    or_id INT PRIMARY KEY,
+    or_date DATE,
+    amount INT,
+    cust_id INT,
+    FOREIGN KEY (cust_id) REFERENCES customer(cust_id)
+);
+
+-- INSERT CUSTOMER DATA
+
+INSERT INTO customer VALUES
+(1, 'Amit Sharma', 'Delhi', 'amit@gmail.com'),
+(2, 'Priya Verma', 'Mumbai', 'priya@gmail.com'),
+(3, 'Rahul Singh', 'Pune', 'rahul@gmail.com'),
+(4, 'Sneha Patel', 'Ahmedabad', 'sneha@gmail.com'),
+(5, 'Vikas Mehta', 'Jaipur', 'vikas@gmail.com'),
+(6, 'Anjali Nair', 'Kochi', 'anjali@gmail.com'),
+(7, 'Rohit Gupta', 'Lucknow', 'rohit@gmail.com'),
+(8, 'Kiran Rao', 'Hyderabad', 'kiran@gmail.com'),
+(9, 'Meena Joshi', 'Chennai', 'meena@gmail.com'),
+(10, 'Arjun Desai', 'Surat', 'arjun@gmail.com'),
+(11, 'Neha Kapoor', 'Bhopal', 'neha@gmail.com'),
+(12, 'Suresh Yadav', 'Patna', 'suresh@gmail.com'),
+(13, 'Pooja Malhotra', 'Nagpur', 'pooja@gmail.com'),
+(14, 'Manish Kumar', 'Indore', 'manish@gmail.com'),
+(15, 'Divya Reddy', 'Vizag', 'divya@gmail.com');
+
+-- INSERT ORDER DATA
+
+INSERT INTO orders VALUES
+(101, '2024-01-15', 2500, 1),
+(102, '2024-02-10', 1800, 1),
+(103, '2024-02-18', 3200, 1),
+(104, '2024-03-05', 1500, NULL),
+(105, '2024-03-12', 4000, 5),
+(106, '2024-03-20', 2200, 6),
+(107, '2024-04-01', 3100, NULL),
+(108, '2024-04-15', 2700, 8),
+(109, '2024-05-02', 3500, 8),
+(110, '2024-05-18', 1200, 10),
+(111, '2024-06-05', 5000, 11),
+(112, '2024-06-22', 2800, NULL),
+(113, '2024-07-10', 3300, 13),
+(114, '2024-07-25', 2100, 14),
+(115, '2024-08-05', 4500, 13);
+
+-- 1. LEFT JOIN
+
+SELECT customer.cust_id,
+       customer.cust_name,
+       customer.city,
+       customer.email,
+       orders.or_id,
+       orders.or_date,
+       orders.amount
+FROM customer
+LEFT JOIN orders
+ON customer.cust_id = orders.cust_id;
+
+-- 2. INNER JOIN WITH CONDITION
+
+SELECT customer.cust_name,
+       orders.amount
+FROM customer
+INNER JOIN orders
+ON customer.cust_id = orders.cust_id
+WHERE orders.amount > 3000;
+
+-- 3. CUSTOMERS WITH MORE THAN ONE ORDER
+
+SELECT customer.cust_id,
+       customer.cust_name,
+       COUNT(orders.or_id) AS total_orders
+FROM customer
+INNER JOIN orders
+ON customer.cust_id = orders.cust_id
+GROUP BY customer.cust_id, customer.cust_name
+HAVING COUNT(orders.or_id) > 1;
+
+-- 4. DISPLAY ORDER DETAILS WITH CUSTOMER CITY
+
+SELECT orders.or_id,
+       orders.or_date,
+       orders.amount,
+       customer.city
+FROM orders
+JOIN customer
+ON customer.cust_id = orders.cust_id;
+
+-- 5. CUSTOMERS WITH NO ORDERS
+
+SELECT customer.cust_id,
+       customer.cust_name,
+       customer.city,
+       customer.email
+FROM customer
+LEFT JOIN orders
+ON customer.cust_id = orders.cust_id
+WHERE orders.or_id IS NULL;
+
+-- 6. MAXIMUM ORDER AMOUNT OF EACH CUSTOMER
+
+SELECT customer.cust_id,
+       customer.cust_name,
+       customer.city,
+       MAX(orders.amount) AS max_amount
+FROM customer
+JOIN orders
+ON customer.cust_id = orders.cust_id
+GROUP BY customer.cust_id, customer.cust_name, customer.city;
+
+-- 7. TOTAL ORDER AMOUNT OF EACH CUSTOMER
+
+SELECT customer.cust_id,
+       customer.cust_name,
+       customer.city,
+       SUM(orders.amount) AS total_amount
+FROM customer
+JOIN orders
+ON customer.cust_id = orders.cust_id
+GROUP BY customer.cust_id, customer.cust_name, customer.city;
+
+-- 8. SORT ORDERS BY DATE
+
+SELECT orders.or_id,
+       orders.or_date,
+       orders.amount,
+       customer.cust_name,
+       customer.city
+FROM orders
+JOIN customer
+ON orders.cust_id = customer.cust_id
+ORDER BY orders.or_date;
+
+-- 9. ORDERS OF CUSTOMERS FROM PUNE
+
+SELECT customer.cust_id,
+       customer.cust_name,
+       customer.city,
+       orders.or_id,
+       orders.or_date,
+       orders.amount
+FROM customer
+JOIN orders
+ON customer.cust_id = orders.cust_id
+WHERE customer.city = 'Pune';
+
+-- 10. LATEST ORDER DATE OF EACH CUSTOMER
+
+SELECT customer.cust_id,
+       customer.cust_name,
+       customer.city,
+       MAX(orders.or_date) AS latest_order
+FROM customer
+JOIN orders
+ON customer.cust_id = orders.cust_id
+GROUP BY customer.cust_id, customer.cust_name, customer.city;
