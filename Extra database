@@ -1,0 +1,185 @@
+-- HOSPITAL DATABASE
+
+CREATE DATABASE hospital_db;
+
+USE hospital_db;
+
+CREATE TABLE doctor(
+    doctor_id INT PRIMARY KEY,
+    doctor_name VARCHAR(50),
+    specialization VARCHAR(50)
+);
+
+CREATE TABLE patient(
+    patient_id INT PRIMARY KEY,
+    patient_name VARCHAR(50),
+    age INT,
+    doctor_id INT,
+    FOREIGN KEY(doctor_id) REFERENCES doctor(doctor_id)
+);
+
+INSERT INTO doctor VALUES
+(1, 'Dr. Amit', 'Cardiologist'),
+(2, 'Dr. Sneha', 'Neurologist'),
+(3, 'Dr. Rahul', 'Orthopedic');
+
+INSERT INTO patient VALUES
+(101, 'Kiran', 25, 1),
+(102, 'Rohit', 30, 2),
+(103, 'Priya', 22, 3);
+
+-----------------------------------------------------
+
+-- LIBRARY DATABASE
+
+CREATE DATABASE library_db;
+
+USE library_db;
+
+CREATE TABLE books(
+    book_id INT PRIMARY KEY,
+    book_name VARCHAR(50),
+    author_name VARCHAR(50)
+);
+
+CREATE TABLE student(
+    student_id INT PRIMARY KEY,
+    student_name VARCHAR(50),
+    book_id INT,
+    FOREIGN KEY(book_id) REFERENCES books(book_id)
+);
+
+INSERT INTO books VALUES
+(1, 'DBMS', 'Navathe'),
+(2, 'Java', 'Balagurusamy'),
+(3, 'Python', 'Guido');
+
+INSERT INTO student VALUES
+(101, 'Amit', 1),
+(102, 'Sneha', 2),
+(103, 'Rahul', 3);
+
+-----------------------------------------------------
+
+-- BANK DATABASE
+
+CREATE DATABASE bank_db;
+
+USE bank_db;
+
+CREATE TABLE customer(
+    cust_id INT PRIMARY KEY,
+    cust_name VARCHAR(50),
+    city VARCHAR(30)
+);
+
+CREATE TABLE account(
+    acc_no INT PRIMARY KEY,
+    balance INT,
+    cust_id INT,
+    FOREIGN KEY(cust_id) REFERENCES customer(cust_id)
+);
+
+INSERT INTO customer VALUES
+(1, 'Rahul', 'Pune'),
+(2, 'Sneha', 'Mumbai'),
+(3, 'Amit', 'Delhi');
+
+INSERT INTO account VALUES
+(1001, 50000, 1),
+(1002, 70000, 2),
+(1003, 40000, 3);
+
+-----------------------------------------------------
+
+-- HOTEL DATABASE
+
+CREATE DATABASE hotel_db;
+
+USE hotel_db;
+
+CREATE TABLE room(
+    room_id INT PRIMARY KEY,
+    room_type VARCHAR(30),
+    price INT
+);
+
+CREATE TABLE customer(
+    cust_id INT PRIMARY KEY,
+    cust_name VARCHAR(50),
+    room_id INT,
+    FOREIGN KEY(room_id) REFERENCES room(room_id)
+);
+
+INSERT INTO room VALUES
+(1, 'AC', 3000),
+(2, 'Non-AC', 2000),
+(3, 'Deluxe', 5000);
+
+INSERT INTO customer VALUES
+(101, 'Kiran', 1),
+(102, 'Priya', 2),
+(103, 'Rohit', 3);
+
+-----------------------------------------------------
+
+-- RAILWAY DATABASE
+
+CREATE DATABASE railway_db;
+
+USE railway_db;
+
+CREATE TABLE train(
+    train_id INT PRIMARY KEY,
+    train_name VARCHAR(50),
+    source VARCHAR(30),
+    destination VARCHAR(30)
+);
+
+CREATE TABLE passenger(
+    passenger_id INT PRIMARY KEY,
+    passenger_name VARCHAR(50),
+    train_id INT,
+    FOREIGN KEY(train_id) REFERENCES train(train_id)
+);
+
+INSERT INTO train VALUES
+(1, 'Rajdhani', 'Mumbai', 'Delhi'),
+(2, 'Duronto', 'Pune', 'Nagpur'),
+(3, 'Express', 'Chennai', 'Bangalore');
+
+INSERT INTO passenger VALUES
+(101, 'Rahul', 1),
+(102, 'Sneha', 2),
+(103, 'Amit', 3);
+
+-----------------------------------------------------
+
+-- E-COMMERCE DATABASE
+
+CREATE DATABASE ecommerce_db;
+
+USE ecommerce_db;
+
+CREATE TABLE product(
+    product_id INT PRIMARY KEY,
+    product_name VARCHAR(50),
+    price INT
+);
+
+CREATE TABLE orders(
+    order_id INT PRIMARY KEY,
+    customer_name VARCHAR(50),
+    product_id INT,
+    FOREIGN KEY(product_id) REFERENCES product(product_id)
+);
+
+INSERT INTO product VALUES
+(1, 'Laptop', 60000),
+(2, 'Mobile', 25000),
+(3, 'Headphones', 3000);
+
+INSERT INTO orders VALUES
+(101, 'Kiran', 1),
+(102, 'Rahul', 2),
+(103, 'Sneha', 3);
