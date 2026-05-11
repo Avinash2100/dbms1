@@ -1,0 +1,133 @@
+// CREATE DATABASE
+
+use EmployeeDB
+
+//--------------------------------------------------
+
+// CREATE COLLECTION
+
+db.createCollection("EmployeeMongo")
+
+//--------------------------------------------------
+
+// INSERT MINIMUM 5 EMPLOYEE DOCUMENTS
+
+db.EmployeeMongo.insertMany([
+{
+    emp_id: 1,
+    name: "Rahul",
+    department: "IT",
+    salary: 60000
+},
+{
+    emp_id: 2,
+    name: "Sneha",
+    department: "HR",
+    salary: 45000
+},
+{
+    emp_id: 3,
+    name: "Amit",
+    department: "Finance",
+    salary: 70000
+},
+{
+    emp_id: 4,
+    name: "Priya",
+    department: "IT",
+    salary: 55000
+},
+{
+    emp_id: 5,
+    name: "Kiran",
+    department: "Marketing",
+    salary: 40000
+}
+])
+
+//--------------------------------------------------
+
+// DISPLAY ALL EMPLOYEE RECORDS
+
+db.EmployeeMongo.find()
+
+//--------------------------------------------------
+
+// DISPLAY EMPLOYEES WORKING IN IT DEPARTMENT
+
+db.EmployeeMongo.find(
+{
+    department: "IT"
+}
+)
+
+//--------------------------------------------------
+
+// DISPLAY EMPLOYEES HAVING SALARY GREATER THAN 50000
+
+db.EmployeeMongo.find(
+{
+    salary: { $gt: 50000 }
+}
+)
+
+//--------------------------------------------------
+
+// UPDATE SALARY OF ONE EMPLOYEE
+
+db.EmployeeMongo.updateOne(
+{
+    emp_id: 2
+},
+{
+    $set: { salary: 50000 }
+}
+)
+
+//--------------------------------------------------
+
+// DELETE EMPLOYEE RECORD HAVING MINIMUM SALARY
+
+db.EmployeeMongo.deleteOne(
+{
+    salary: 40000
+}
+)
+
+//--------------------------------------------------
+
+// SORT EMPLOYEES BY SALARY IN DESCENDING ORDER
+
+db.EmployeeMongo.find().sort(
+{
+    salary: -1
+}
+)
+
+//--------------------------------------------------
+
+// CALCULATE DEPARTMENT-WISE AVERAGE SALARY
+
+db.EmployeeMongo.aggregate([
+{
+    $group:
+    {
+        _id: "$department",
+        average_salary: { $avg: "$salary" }
+    }
+}
+])
+
+//--------------------------------------------------
+
+// COUNT NUMBER OF EMPLOYEES DEPARTMENT-WISE
+
+db.EmployeeMongo.aggregate([
+{
+    $group:
+    {
+        _id: "$department",
+        total_employees: { $sum: 1 }
+    }
+}
+])
