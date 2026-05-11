@@ -1,0 +1,156 @@
+CREATE DATABASE sales_db;
+
+USE sales_db;
+
+-- CREATE SALES TABLE
+
+CREATE TABLE Sales(
+    SaleID INT PRIMARY KEY AUTO_INCREMENT,
+    ProductName VARCHAR(50),
+    Quantity INT,
+    Price DECIMAL(10,2),
+    SaleDate DATE
+);
+
+-- INSERT SAMPLE RECORDS
+
+INSERT INTO Sales(ProductName, Quantity, Price, SaleDate) VALUES
+('Laptop', 2, 50000, '2024-01-10'),
+('Mobile', 5, 20000, '2024-02-15'),
+('Tablet', 3, 15000, '2024-03-05'),
+('Headphones', 4, 3000, '2024-03-20'),
+('Keyboard', 6, 2000, '2024-04-01');
+
+-- DISPLAY TABLE
+
+SELECT * FROM Sales;
+
+--------------------------------------------------
+
+-- CREATE PROCEDURE TO ADD SALE
+
+DELIMITER //
+
+CREATE PROCEDURE add_sale(
+    IN p_name VARCHAR(50),
+    IN qty INT,
+    IN pr DECIMAL(10,2),
+    IN s_date DATE
+)
+
+BEGIN
+
+    INSERT INTO Sales(ProductName, Quantity, Price, SaleDate)
+    VALUES(p_name, qty, pr, s_date);
+
+END //
+
+DELIMITER ;
+
+--------------------------------------------------
+
+-- EXECUTE PROCEDURE
+
+CALL add_sale('Mouse', 3, 1000, '2024-05-10');
+
+--------------------------------------------------
+
+-- CREATE FUNCTION TO CALCULATE TOTAL SALES
+
+DELIMITER //
+
+CREATE FUNCTION get_total_sales()
+RETURNS DECIMAL(15,2)
+
+DETERMINISTIC
+
+BEGIN
+
+    DECLARE total DECIMAL(15,2);
+
+    SELECT SUM(Quantity * Price)
+    INTO total
+    FROM Sales;
+
+    RETURN total;
+
+END //
+
+DELIMITER ;
+
+--------------------------------------------------
+
+-- DISPLAY TOTAL SALES
+
+SELECT get_total_sales();
+
+--------------------------------------------------
+
+-- CREATE FUNCTION TO CALCULATE AVERAGE SALES
+
+DELIMITER //
+
+CREATE FUNCTION get_average_sales()
+RETURNS DECIMAL(15,2)
+
+DETERMINISTIC
+
+BEGIN
+
+    DECLARE avg_sales DECIMAL(15,2);
+
+    SELECT AVG(Quantity * Price)
+    INTO avg_sales
+    FROM Sales;
+
+    RETURN avg_sales;
+
+END //
+
+DELIMITER ;
+
+--------------------------------------------------
+
+-- DISPLAY AVERAGE SALES
+
+SELECT get_average_sales();
+
+--------------------------------------------------
+
+-- UPDATE PRODUCT PRICE USING PROCEDURE
+
+DELIMITER //
+
+CREATE PROCEDURE update_price(
+    IN s_id INT,
+    IN new_price DECIMAL(10,2)
+)
+
+BEGIN
+
+    UPDATE Sales
+    SET Price = new_price
+    WHERE SaleID = s_id;
+
+END //
+
+DELIMITER ;
+
+--------------------------------------------------
+
+-- EXECUTE UPDATE PROCEDURE
+
+CALL update_price(1, 55000);
+
+--------------------------------------------------
+
+-- DELETE SALES RECORD
+
+DELETE FROM Sales
+WHERE SaleID = 3;
+
+--------------------------------------------------
+
+-- DISPLAY UPDATED SALES DETAILS
+
+SELECT * FROM Sales;
